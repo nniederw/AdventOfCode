@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace AdventOfCode
 {
@@ -10,7 +11,7 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Day3Part1());
+            Console.WriteLine(Day3Part2());
         }
         private static int Day1Part1()
         {
@@ -140,7 +141,7 @@ namespace AdventOfCode
         }
         private static int Day3Part1()
         {
-            const int BitLength = 5;
+            const int BitLength = 12;
             List<BitArray> array = new List<BitArray>();
             var path = "D:/WorkGit/nniederw/AdventOfCode2021/AdventOfCode/Input/Day3.txt";
             var enumLines = File.ReadLines(path, Encoding.UTF8);
@@ -181,16 +182,66 @@ namespace AdventOfCode
                     epsilon[i] = true;
                 }
             }
-            var intGamma = Convert.ToInt32(ToBinaryString(gamma),2);
-            var intEpsilon = Convert.ToInt32(ToBinaryString(epsilon),2);
+            var intGamma = Convert.ToInt32(ToBinaryString(gamma), 2);
+            var intEpsilon = Convert.ToInt32(ToBinaryString(epsilon), 2);
+            Console.WriteLine($"gamma {ToBinaryString(gamma)} {intGamma}, epsilon {ToBinaryString(epsilon)} {intEpsilon}");
             return intGamma * intEpsilon;
+        }
+        private static int Day3Part2()
+        {
+            const int BitLength = 12;
+            List<BitArray> array = new List<BitArray>();
+            var path = "D:/WorkGit/nniederw/AdventOfCode2021/AdventOfCode/Input/Day3.txt";
+            var enumLines = File.ReadLines(path, Encoding.UTF8);
+            foreach (var line in enumLines)
+            {
+                var bitarr = new BitArray(BitLength);
+                for (int i = 0; i < bitarr.Length; i++)
+                {
+                    bitarr.Set(i, line[i] == '1');
+                }
+                array.Add(bitarr);
+            }
+            return Day3Part2Func(array);
+        }
+        private static int Day3Part2Func(List<BitArray> list)
+        {
+            var OxygenList = new List<BitArray>(list);
+            int length = list[0].Length;
+            for (int i = 0; i < length; i++)
+            {
+                int ones = 0;
+                for (int j = 0; j < OxygenList.Count; j++)
+                { if (OxygenList[j][i]) { ones++; } }
+                if (ones >= OxygenList.Count - ones) { OxygenList = Keep1At(i, OxygenList); }
+                else { OxygenList = Keep0At(i, OxygenList); }
+            }
+            var CO2List = new List<BitArray>(list);
+            for (int i = 0; i < length; i++)
+            {
+                if (CO2List.Count == 1) { break; }
+                int ones = 0;
+                for (int j = 0; j < CO2List.Count; j++)
+                { if (CO2List[j][i]) { ones++; } }
+                if (ones < CO2List.Count - ones) { CO2List = Keep1At(i, CO2List); }
+                else { CO2List = Keep0At(i, CO2List); }
+            }
+            List<BitArray> Keep1At(int index, List<BitArray> bits) => bits.Where(i => i[index]).ToList();
+            List<BitArray> Keep0At(int index, List<BitArray> bits) => bits.Where(i => !i[index]).ToList();
+            Console.WriteLine($"o2list {OxygenList.Count} co2list {CO2List.Count}");
+
+            var CO2 = Convert.ToInt32(ToBinaryString(CO2List[0]), 2);
+            var O2 = Convert.ToInt32(ToBinaryString(OxygenList[0]), 2);
+            Console.WriteLine($"O2 {ToBinaryString(OxygenList[0])} CO2 {ToBinaryString(CO2List[0])}");
+            Console.WriteLine($"O2 {O2} CO2 {CO2}");
+            return CO2 * O2;
         }
         private static string ToBinaryString(BitArray bits)
         {
             string res = "";
             foreach (bool item in bits)
             {
-                res += item?"1":"0";
+                res += item ? "1" : "0";
             }
             return res;
         }
