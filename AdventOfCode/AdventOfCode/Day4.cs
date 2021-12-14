@@ -183,7 +183,7 @@ internal class BingoBoard
         return false;
     }
 }
-public static class Ext
+public static class Extention
 {
     public static List<(int, int)> Contains<T>(this T[,] array, T item)
     {
