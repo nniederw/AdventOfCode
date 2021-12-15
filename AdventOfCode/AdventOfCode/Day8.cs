@@ -11,7 +11,7 @@ public static class Day8
     private static List<(List<List<char>> number, List<List<char>> solutions)> GetInput()
     {
         List<(List<List<char>> number, List<List<char>> solutions)> result = new List<(List<List<char>> number, List<List<char>> solutions)>();
-        foreach (var line in File.ReadAllLines("D:/WorkGit/nniederw/AdventOfCode2021/AdventOfCode/Input/Day8Small.txt"))
+        foreach (var line in File.ReadAllLines("D:/WorkGit/nniederw/AdventOfCode2021/AdventOfCode/Input/Day8.txt"))
         {
             List<List<char>> numbers = new List<List<char>>();
             List<List<char>> solutions = new List<List<char>>();
@@ -64,14 +64,21 @@ public static class Day8
             { list[i] = translation[list[i]]; }
         });
         List<int> results = new List<int>();
-        int res = 0;
+        solutions.ForEach(i => results.Add(GetNumberUnsafe(i)));
+        string result = "";
+        foreach(var i in results)
+        {
+            result += i;
+        }
+        return Convert.ToInt32(result);
+        /*int res = 0;
         int times10 = 1;
         for (int i = results.Count - 1; i >= 0; i--)
         {
             res = results[i] * times10;
             times10 *= 10;
         }
-        return res;
+        return res;*/
     }
     private static int GetNumberUnsafe(List<char> number)
     {
