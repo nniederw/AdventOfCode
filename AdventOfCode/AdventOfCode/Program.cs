@@ -11,7 +11,7 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Day9.GetP1());
+            Console.WriteLine(Day10.GetP2());
         }
         private static int Day1Part1()
         {
