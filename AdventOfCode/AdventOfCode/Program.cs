@@ -7,11 +7,12 @@ using System.Linq;
 
 namespace AdventOfCode
 {
-    class Program
+    public class Program
     {
+        public const string InputFolderPath = "D:/WorkGit/nniederw/AdventOfCode2021/AdventOfCode/Input";
         static void Main(string[] args)
         {
-            Console.WriteLine(Day10.GetP2());
+            Console.WriteLine(Day12.GetP2());
         }
         private static int Day1Part1()
         {

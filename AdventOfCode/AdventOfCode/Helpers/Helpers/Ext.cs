@@ -65,7 +65,31 @@ namespace Helpers
             }
             return list;
         }
+        public static T[] Foreach<T>(this T[] list, Action<T> action)
+        {
+            foreach (T item in list)
+            {
+                action(item);
+            }
+            return list;
+        }
+        public static T[,] Foreach<T>(this T[,] list, Action<T> action)
+        {
+            foreach (T item in list)
+            {
+                action(item);
+            }
+            return list;
+        }
+        /// <summary>
+        /// maybe remove
+        /// </summary>
         public static List<T> Foreach<T>(this List<T> list, Action<T> action) => (List<T>)list.AsEnumerable().Foreach(action);
+        public static List<T> ADD<T>(this List<T> list, T element)
+        {
+            list.Add(element);
+            return list;
+        }
         public static T2 MaxValue<T1, T2>(this IEnumerable<T1> list, Func<T1, T2> getvalue) where T2 : IComparable<T2>
         {
             if (list.Any())
