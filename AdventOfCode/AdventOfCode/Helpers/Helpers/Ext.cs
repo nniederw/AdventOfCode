@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -90,6 +91,27 @@ namespace Helpers
             list.Add(element);
             return list;
         }
+        public static IEnumerable<T> GetEnumerable<T>(this IEnumerator<T> enumerator)
+        {
+            while (enumerator.MoveNext())
+            {
+                yield return enumerator.Current;
+            }
+        }
+        public static IEnumerable<T> GetEnumerable<T>(this IEnumerator enumerator)
+        {
+            while (enumerator.MoveNext())
+            {
+                yield return (T)enumerator.Current;
+            }
+        }
+        /* public static IEnumerable<T> GetEnumerable<T>(this IEnumerator<T> enumerator)
+         {
+             while (enumerator.MoveNext())
+             {
+                 yield return enumerator.Current;
+             }
+         }*/
         public static T2 MaxValue<T1, T2>(this IEnumerable<T1> list, Func<T1, T2> getvalue) where T2 : IComparable<T2>
         {
             if (list.Any())

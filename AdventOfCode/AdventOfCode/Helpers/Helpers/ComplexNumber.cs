@@ -16,4 +16,8 @@ public struct ComplexNumber
     public static ComplexNumber operator +(ComplexNumber a, ComplexNumber b) => new ComplexNumber(a.Real + b.Real, a.Imaginary + b.Imaginary);
     public static bool operator ==(ComplexNumber a, ComplexNumber b) => a.Real == b.Real && a.Imaginary == b.Imaginary;
     public static bool operator !=(ComplexNumber a, ComplexNumber b) => a.Real != b.Real || a.Imaginary != b.Imaginary;
+
+    public override bool Equals(object obj) => ((ComplexNumber)obj) == this;
+
+    public override int GetHashCode() => HashCode.Combine(Real, Imaginary);
 }

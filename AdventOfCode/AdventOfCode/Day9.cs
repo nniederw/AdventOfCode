@@ -49,7 +49,7 @@ public static class Day9
     private static int FuncPart2(int[,] hmap)
     {
         throw new NotImplementedException();
-        List<Basin> basins = new List<Basin>();
+        /*List<Basin> basins = new List<Basin>();
         for (int i = 0; i < hmap.GetLength(0); i++)
         {
             for (int j = 0; j < hmap.GetLength(1); j++)
@@ -93,7 +93,7 @@ public static class Day9
                 i++;
             }
         }
-        return basins.Product(i => i.Parts.Count);
+        return basins.Product(i => i.Parts.Count);*/
     }
     public static int Product<T>(this IEnumerable<T> list, Func<T, int> getInt)
     {
