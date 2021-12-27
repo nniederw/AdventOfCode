@@ -26,9 +26,9 @@ namespace AdventOfCode
             var folds = new List<bool>();
             bool Folding = false;
             Width = 1311;
-           // Width = 15;
-            Height = 894;
-           // Height = 11;
+            // Width = 15;
+            Height = 895;
+            // Height = 11;
             foreach (var line in File.ReadAllLines(Program.InputFolderPath + "/Day13.txt"))
             {
                 if (line == "")
@@ -38,7 +38,7 @@ namespace AdventOfCode
                 }
                 if (Folding)
                 {
-                    folds.Add(line[line.Length - 3] == 'x');
+                    folds.Add(line[11] == 'x');
                 }
                 else
                 {
@@ -112,7 +112,19 @@ namespace AdventOfCode
 
         private static long FuncPart2(List<(int, int)> points, List<bool> folds)
         {
-            return default;
+            bool[,] holes = new bool[Width, Height];
+            points.ForEach(i => holes[i.Item1, i.Item2] = true);
+            folds.ForEach(i => holes = Fold(holes, i));
+            for (int i = 0; i < holes.GetLength(1); i++)
+            {
+                Console.WriteLine();
+                for (int j = 0; j < holes.GetLength(0); j++)
+                {
+                    Console.Write(holes[j,i]?'#':'.');
+                }
+            }
+            Console.WriteLine();
+            return -1;
         }
     }
 }
