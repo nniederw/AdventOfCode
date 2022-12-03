@@ -2,7 +2,7 @@
 {
     class Day1
     {
-        private static void Main()
+        public static void Start()
         {
             Console.WriteLine("Test");
             //var lines = File.ReadLines(Consts.InputPath + "Day1.txt");
