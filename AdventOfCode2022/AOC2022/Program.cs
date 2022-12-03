@@ -1,2 +1,10 @@
 ﻿using AOC2022;
+Console.WriteLine("Day 1");
+Day1.Start();
+Console.WriteLine();
+Console.WriteLine("Day 2");
 Day2.Start();
+Console.WriteLine();
+Console.WriteLine("Day 3");
+Day3.Start();
+Console.WriteLine();

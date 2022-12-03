@@ -5,10 +5,7 @@
         private enum Shape { Rock, Paper, Scissors }
         public static void Start()
         {
-            //Console.WriteLine(Score(Shape.Paper, Shape.Rock));
-            //Console.WriteLine(Score(Shape.Rock, Shape.Paper));
-            //Console.WriteLine(Score(Shape.Scissors, Shape.Scissors));
-            var lines = File.ReadLines("D:/WorkGit/nniederw/AdventOfCode/AdventOfCode2022/Input/Day2.txt");
+            var lines = File.ReadLines($"{Global.InputPath}/Day2.txt");
             List<(Shape, Shape)> input = new();
             foreach (var line in lines)
             {
@@ -62,11 +59,11 @@
         }
         private static Shape Win(Shape opp)
         {
-            return (Shape)((((int)opp) + 1 )% 3);
+            return (Shape)((((int)opp) + 1) % 3);
         }
         private static Shape Loose(Shape opp)
         {
-            return (Shape)((((int)opp) + 2 )% 3);
+            return (Shape)((((int)opp) + 2) % 3);
         }
     }
 }

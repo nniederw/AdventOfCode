@@ -4,10 +4,7 @@
     {
         public static void Start()
         {
-            Console.WriteLine("Test");
-            //var lines = File.ReadLines(Consts.InputPath + "Day1.txt");
-            //D:/WorkExt/Git/nniederw/AdventOfCode/AdventOfCode2022/Input/Day1.txt
-            var lines = File.ReadLines("D:/WorkGit/nniederw/AdventOfCode/AdventOfCode2022/Input/Day1.txt");
+            var lines = File.ReadLines($"{Global.InputPath}/Day1.txt");
             List<int> calo = new();
             int i = 0;
             calo.Add(i);
