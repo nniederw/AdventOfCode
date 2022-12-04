@@ -8,3 +8,6 @@ Console.WriteLine();
 Console.WriteLine("Day 3");
 Day3.Start();
 Console.WriteLine();
+Console.WriteLine("Day 4");
+Day4.Start();
+Console.WriteLine();
