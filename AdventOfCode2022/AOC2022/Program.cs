@@ -11,3 +11,6 @@ Console.WriteLine();
 Console.WriteLine("Day 4");
 Day4.Start();
 Console.WriteLine();
+Console.WriteLine("Day 5");
+Day5.Start();
+Console.WriteLine();
