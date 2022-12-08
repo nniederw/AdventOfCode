@@ -29,21 +29,118 @@
         private static bool Visible(int[,] grid, int x, int y)
         {
             int height = grid[x, y];
-            for (int i = 0; i < ; i++)
+            bool visible = true;
+            for (int i = 0; i < x; i++)
             {
-
+                if (height <= grid[i, y])
+                {
+                    visible = false;
+                }
             }
-
-            return false;
+            if (visible) return true;
+            visible = true;
+            for (int i = x + 1; i < N; i++)
+            {
+                if (height <= grid[i, y])
+                {
+                    visible = false;
+                }
+            }
+            if (visible) return true;
+            visible = true;
+            for (int i = 0; i < y; i++)
+            {
+                if (height <= grid[x, i])
+                {
+                    visible = false;
+                }
+            }
+            if (visible) return true;
+            visible = true;
+            for (int i = y + 1; i < M; i++)
+            {
+                if (height <= grid[x, i])
+                {
+                    visible = false;
+                }
+            }
+            //if (visible) return true;
+            return visible;
         }
         private static int Part1(int[,] input)
         {
-            return -1;
+            int sum = 0;
+            for (int x = 0; x < N; x++)
+            {
+                for (int y = 0; y < M; y++)
+                {
+                    if (Visible(input, x, y))
+                    {
+                        sum++;
+                        //Console.WriteLine($"x {x}, y {y}");
+                    }
+                }
+            }
+            return sum;
         }
-
+        private static int Score(int x, int y)
+        {
+            int score = 1;
+            int height = Grid[x, y];
+            int distance = 0;
+            for (int i = x - 1; i >= 0; i--, distance++)
+            {
+                if (height <= Grid[i, y])
+                {
+                    distance++;
+                    break;
+                }
+            }
+            score *= distance;
+            distance = 0;
+            for (int i = x + 1; i < N; i++, distance++)
+            {
+                if (height <= Grid[i, y])
+                {
+                    distance++;
+                    break;
+                }
+            }
+            score *= distance;
+            distance = 0;
+            for (int i = y - 1; i >= 0; i--, distance++)
+            {
+                if (height <= Grid[x, i])
+                {
+                    distance++;
+                    break;
+                }
+            }
+            score *= distance;
+            distance = 0;
+            for (int i = y + 1; i < M; i++, distance++)
+            {
+                if (height <= Grid[x, i])
+                {
+                    distance++;
+                    break;
+                }
+            }
+            score *= distance;
+            return score;
+        }
         private static int Part2(int[,] input)
         {
-            return -1;
+            int max = 0;
+            for (int x = 0; x < N; x++)
+            {
+                for (int y = 0; y < M; y++)
+                {
+                    int s = Score(x, y);
+                    max = Math.Max(max, s);
+                }
+            }
+            return max;
         }
     }
 }
