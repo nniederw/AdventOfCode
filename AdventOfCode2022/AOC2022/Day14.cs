@@ -15,8 +15,8 @@
                     Rocks.Add((GetPos(l[i - 1]), GetPos(l[i])));
                 }
             }
-            int maxX;//max + 1
-            int maxY;// max + 1
+            int maxX = 500 + Rocks.MaxValue(i => Math.Max(i.Item1.x, i.Item2.x));
+            int maxY = 3 + Rocks.MaxValue(i => Math.Max(i.Item1.y, i.Item2.y));
             char[,] grid = new char[maxX, maxY];
             for (int x = 0; x < maxX; x++)
             {
@@ -40,9 +40,11 @@
                     x += dx;
                     y += dy;
                 }
+                grid[x, y] = '#';
             }
-            Console.WriteLine(Part1(grid));
-            Console.WriteLine(Part2(grid));
+            int part1 = Part1(grid);
+            Console.WriteLine(part1);
+            Console.WriteLine(Part2(grid, part1));
         }
         private static (int, int) GetPos(string s)
         {
@@ -51,11 +53,93 @@
         }
         private static int Part1(char[,] grid)
         {
-            return -1;
+            int sandX = 500;
+            int sandY = 0;
+            int maxY = grid.GetLength(1) - 1;
+            int i = 0;
+            while (true)
+            {
+                if (sandY == maxY)
+                {
+                    break;
+                }
+                if (grid[sandX, sandY + 1] == '.')
+                {
+                    sandY++;
+                }
+                else if (grid[sandX - 1, sandY + 1] == '.')
+                {
+                    sandX--;
+                    sandY++;
+                }
+                else if (grid[sandX + 1, sandY + 1] == '.')
+                {
+                    sandX++;
+                    sandY++;
+                }
+                else
+                {
+                    grid[sandX, sandY] = 'o';
+                    sandX = 500;
+                    sandY = 0;
+                    i++;
+                }
+            }
+            return i;
         }
-        private static int Part2(char[,] grid)
+        private static void Print(char[,] grid)
         {
-            return -1;
+            for (int i = 0; i < grid.GetLength(1); i++)
+            {
+                for (int j = 400; j < grid.GetLength(0) && j < 600; j++)
+                {
+                    Console.Write(Grid(j, i));
+                }
+                Console.WriteLine();
+            }
+            char Grid(int x, int y)
+            {
+                if (y == grid.GetLength(1) - 1) return '#';
+                return grid[x, y];
+            }
+        }
+        private static int Part2(char[,] grid, int iterationsPart1)
+        {
+            int sandX = 500;
+            int sandY = 0;
+            int maxY = grid.GetLength(1) - 1;
+            int i = 0;
+            while (true)
+            {
+                if (grid[500, 0] == 'o') break;
+                if (Grid(sandX, sandY + 1) == '.')
+                {
+                    sandY++;
+                }
+                else if (Grid(sandX - 1, sandY + 1) == '.')
+                {
+                    sandX--;
+                    sandY++;
+                }
+                else if (Grid(sandX + 1, sandY + 1) == '.')
+                {
+                    sandX++;
+                    sandY++;
+                }
+                else
+                {
+                    grid[sandX, sandY] = 'o';
+                    sandX = 500;
+                    sandY = 0;
+                    i++;
+                }
+            }
+            char Grid(int x, int y)
+            {
+                if (y == maxY) return '#';
+                return grid[x, y];
+            }
+            return i + iterationsPart1;
         }
     }
 }
