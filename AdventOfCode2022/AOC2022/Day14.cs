@@ -15,8 +15,8 @@
                     Rocks.Add((GetPos(l[i - 1]), GetPos(l[i])));
                 }
             }
-            int maxX;//max + 1
-            int maxY;// max + 1
+            int maxX = 5000;//max + 1
+            int maxY = 5000;// max + 1
             char[,] grid = new char[maxX, maxY];
             for (int x = 0; x < maxX; x++)
             {
