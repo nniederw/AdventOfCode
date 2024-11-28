@@ -17,6 +17,8 @@
             }
             int maxX = 500 + Rocks.MaxValue(i => Math.Max(i.Item1.x, i.Item2.x));
             int maxY = 3 + Rocks.MaxValue(i => Math.Max(i.Item1.y, i.Item2.y));
+            int maxX = 5000;//max + 1
+            int maxY = 5000;// max + 1
             char[,] grid = new char[maxX, maxY];
             for (int x = 0; x < maxX; x++)
             {
