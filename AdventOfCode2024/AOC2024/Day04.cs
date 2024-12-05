@@ -66,17 +66,6 @@
             var chain = BoundedChain(x, y, dx, dy, length, width, height);
             return new string(chain.Select(i => board[i.x, i.y]).ToArray());
         }
-        private string GetStringOld(char[,] board, int x, int y, int dx, int dy, int length)
-        {
-            string result = "";
-            for (int i = 0; i < length; i++)
-            {
-                result += board[x, y];
-                x += dx;
-                y += dy;
-            }
-            return result;
-        }
         private int Part2(char[,] board, int width, int height)
         {
             string SearchStr = "MAS";
