@@ -14,7 +14,7 @@
                 list1.Add(Convert.ToInt32(values[0]));
                 list2.Add(Convert.ToInt32(values[1]));
             }
-            Console.WriteLine(Part1(list1.ToList(), list2.ToList())) ;
+            Console.WriteLine(Part1(list1.ToList(), list2.ToList()));
             Console.WriteLine(Part2(list1.ToList(), list2.ToList()));
         }
         private int Part1(List<int> list1, List<int> list2)
@@ -28,10 +28,7 @@
             }
             return distance;
         }
-        private int Distance(int x, int y)
-        {
-            return Math.Abs(Math.Abs(x) - Math.Abs(y));
-        }
+        private int Distance(int x, int y) => Math.Abs(x - y);
         private int Part2(List<int> list1, List<int> list2)
         {
             int similarityScore = 0;
