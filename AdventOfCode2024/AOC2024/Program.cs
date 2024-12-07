@@ -8,6 +8,8 @@ var Days = new List<IDay>()
 foreach (var day in Days)
 {
     Console.WriteLine(day.GetType().Name);
+    var time = DateTime.Now;
     day.Start();
+    Console.WriteLine($"Took {(DateTime.Now - time).TotalMilliseconds}ms to compute {day.GetType().Name}");
     Console.WriteLine();
 }
