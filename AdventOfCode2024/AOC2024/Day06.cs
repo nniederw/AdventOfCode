@@ -35,19 +35,13 @@
            => 0 <= x && x < width && 0 <= y && y < height;
         private int Part1(char[,] board, int width, int height)
         {
-            int guardX = 0;
-            int guardY = 0;
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    if (board[x, y] == '^')
-                    {
-                        guardX = x;
-                        guardY = y;
-                    }
-                }
-            }
+            int guardX;
+            int guardY;
+            (guardX, guardY) = GetGuardPosition(board, width, height);
+            return GetGuardVisits(board, width, height, guardX, guardY).Count();
+        }
+        private HashSet<(int x, int y)> GetGuardVisits(char[,] board, int width, int height, int guardX, int guardY)
+        {
             HashSet<(int x, int y)> VisitedPos = new();
             VisitedPos.Add((guardX, guardY));
             int dx = 0;
@@ -91,23 +85,28 @@
                 }
                 VisitedPos.Add((guardX, guardY));
             }
-            return VisitedPos.Count();
+            return VisitedPos;
         }
-        private int Part2(char[,] board, int width, int height)
+        private (int guardX, int guardY) GetGuardPosition(char[,] board, int width, int height)
         {
-            int guardX = 0;
-            int guardY = 0;
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
                     if (board[x, y] == '^')
                     {
-                        guardX = x;
-                        guardY = y;
+                        return (x, y);
                     }
                 }
             }
+            return (-1, -1);
+        }
+        private int Part2(char[,] board, int width, int height)
+        {
+            int guardX;
+            int guardY;
+            (guardX, guardY) = GetGuardPosition(board, width, height);
+            var GuardVisits = GetGuardVisits(board, width, height, guardX, guardY);
             int result = 0;
             for (int x = 0; x < width; x++)
             {
@@ -117,7 +116,7 @@
                     {
                         continue;
                     }
-                    if (board[x, y] == '.')
+                    if (GuardVisits.Contains((x, y)) || board[x, y] == '.')
                     {
                         var boardCopy = (char[,])board.Clone();
                         boardCopy[x, y] = '#';
