@@ -31,7 +31,7 @@ namespace AOC2024
         }
         public static T[,] InterpretStringsAs2DArray<T>(IEnumerable<string> input, Func<char, T> Interpret)
             => InterpretAs2DArray(input.Select(i => i.AsEnumerable()), Interpret);
-        public static int[,] InterpretAs2DIntArray(IEnumerable<string> input)
+        public static int[,] InterpretStringsAs2DIntArray(IEnumerable<string> input)
             => InterpretStringsAs2DArray(input, i => Convert.ToInt32(i.ToString()));
         public static char[,] InterpretAs2DCharArray(IEnumerable<string> input)
             => InterpretStringsAs2DArray(input, i => i);
