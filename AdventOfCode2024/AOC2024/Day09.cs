@@ -1,4 +1,5 @@
-﻿using System.Runtime;
+﻿using System.Collections.Immutable;
+using System.Runtime;
 
 namespace AOC2024
 {
@@ -14,7 +15,7 @@ namespace AOC2024
             //Console.WriteLine(Part2(input));
             Console.WriteLine($"{6476642796832} (Precomputed)");
         }
-        private List<int> Expand(List<int> compressedFiles)
+        private List<int> Expand(IReadOnlyList<int> compressedFiles)
         {
             List<int> result = new();
             bool file = true;
@@ -35,7 +36,7 @@ namespace AOC2024
             }
             return result;
         }
-        private long Checksum(List<int> files)
+        private long Checksum(IReadOnlyList<int> files)
         {
             long sum = 0;
             for (int i = 0; i < files.Count; i++)
@@ -73,19 +74,29 @@ namespace AOC2024
             files[indexLastUsedBlock] = -1;
             return true;
         }
-        private long Part1(List<int> files)
+        private long Part1(IReadOnlyList<int> compressedFiles)
         {
-            files = Expand(files);
+            var files = Expand(compressedFiles);
             while (RearangeOnce(files)) { }
             return Checksum(files);
         }
-        private void PrintFiles(List<int> files)
+        private void PrintFiles(IReadOnlyList<int> files)
         {
             string list = "";
-            files.ForEach(f => { if (f != -1) { list += $"{f}|"; } else { list += ".|"; } });
+            foreach (var file in files)
+            {
+                if (file != -1)
+                {
+                    list += $"{file}|";
+                }
+                else
+                {
+                    list += ".|";
+                }
+            }
             Console.WriteLine(list);
         }
-        private List<(int Id, int StartIndex, int Length)> GetAllBlocks(List<int> files)
+        private List<(int Id, int StartIndex, int Length)> GetAllBlocks(IReadOnlyList<int> files)
         {
             List<(int Id, int StartIndex, int Length)> result = new();
             int currentBlock = files.First();
@@ -111,9 +122,9 @@ namespace AOC2024
             }
             return result;
         }
-        private List<(int StartIndex, int Length)> GetUsedBlocks(List<int> files)
+        private List<(int StartIndex, int Length)> GetUsedBlocks(IReadOnlyList<int> files)
             => GetAllBlocks(files).Where(i => i.Id != -1).Select(i => (i.StartIndex, i.Length)).ToList();
-        private List<(int StartIndex, int Length)> GetFreeBlocks(List<int> files)
+        private List<(int StartIndex, int Length)> GetFreeBlocks(IReadOnlyList<int> files)
             => GetAllBlocks(files).Where(i => i.Id == -1).Select(i => (i.StartIndex, i.Length)).ToList();
         private bool TryRearangeBlockOnce(List<int> files, int BlockStartIndex, int BlockLength)
         {
@@ -136,9 +147,9 @@ namespace AOC2024
                 files[BlockStartIndex + i] = -1;
             }
         }
-        private long Part2(List<int> files)
+        private long Part2(IReadOnlyList<int> CompressedFiles)
         {
-            files = Expand(files);
+            var files = Expand(CompressedFiles);
             var blocks = GetUsedBlocks(files);
             blocks.Reverse();
             foreach (var block in blocks)
