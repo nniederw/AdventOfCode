@@ -1,4 +1,6 @@
-﻿namespace AOC2024
+﻿using System.Linq;
+
+namespace AOC2024
 {
     class Day04 : IDay
     {
@@ -6,25 +8,9 @@
         public void Start()
         {
             var lines = File.ReadLines($"{Global.InputPath}/{TextFileName}");
-            List<string> input = new();
-            foreach (var line in lines)
-            {
-                input.Add(line);
-            }
-            if (!input.TrueForAll(i => i.Length == input.First().Length))
-            {
-                Console.WriteLine($"Something doesn't add up in {nameof(Day04)}");
-            }
-            int width = input.First().Length;
-            int height = input.Count;
-            char[,] board = new char[width, height];
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    board[x, y] = input[y][x];
-                }
-            }
+            var board = Input.InterpretAs2DCharArray(lines);
+            int width = board.GetLength(0);
+            int height = board.GetLength(1);
             Console.WriteLine(Part1(board, width, height));
             Console.WriteLine(Part2(board, width, height));
         }

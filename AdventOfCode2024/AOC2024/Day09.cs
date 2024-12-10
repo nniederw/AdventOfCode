@@ -8,16 +8,11 @@ namespace AOC2024
         public void Start()
         {
             var lines = File.ReadLines($"{Global.InputPath}/{TextFileName}");
-            List<int> input = new();
-            foreach (var line in lines)
-            {
-                foreach (var c in line)
-                {
-                    input.Add(Convert.ToInt32(c.ToString()));
-                }
-            }
-            Console.WriteLine(Part1(input));
-            Console.WriteLine(Part2(input));
+            var input = Input.InterpretStringAs1DIntList(lines.First());
+            //Console.WriteLine(Part1(input));
+            Console.WriteLine($"{6448989155953} (Precomputed)");
+            //Console.WriteLine(Part2(input));
+            Console.WriteLine($"{6476642796832} (Precomputed)");
         }
         private List<int> Expand(List<int> compressedFiles)
         {
@@ -84,6 +79,12 @@ namespace AOC2024
             while (RearangeOnce(files)) { }
             return Checksum(files);
         }
+        private void PrintFiles(List<int> files)
+        {
+            string list = "";
+            files.ForEach(f => { if (f != -1) { list += $"{f}|"; } else { list += ".|"; } });
+            Console.WriteLine(list);
+        }
         private List<(int Id, int StartIndex, int Length)> GetAllBlocks(List<int> files)
         {
             List<(int Id, int StartIndex, int Length)> result = new();
@@ -119,7 +120,7 @@ namespace AOC2024
             var freeBlocks = GetFreeBlocks(files);
             foreach (var i in freeBlocks)
             {
-                if (i.Length >= BlockLength &&i.StartIndex < BlockStartIndex)
+                if (i.Length >= BlockLength && i.StartIndex < BlockStartIndex)
                 {
                     RearangeBlock(files, BlockStartIndex, BlockLength, i.StartIndex);
                     return true;
@@ -144,6 +145,7 @@ namespace AOC2024
             {
                 TryRearangeBlockOnce(files, block.StartIndex, block.Length);
             }
+            //PrintFiles(files);
             return Checksum(files);
         }
     }

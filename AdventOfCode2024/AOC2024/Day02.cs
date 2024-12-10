@@ -6,17 +6,7 @@
         public void Start()
         {
             var lines = File.ReadLines($"{Global.InputPath}/{TextFileName}");
-            List<List<int>> lists = new();
-            foreach (var line in lines)
-            {
-                var ints = line.Split(' ');
-                List<int> list = new();
-                foreach (var i in ints)
-                {
-                    list.Add(Convert.ToInt32(i));
-                }
-                lists.Add(list);
-            }
+            List<List<int>> lists = Input.InterpretAs1DList(lines, line => line.Split(' ').Select(i => Convert.ToInt32(i)).ToList());
             Console.WriteLine(Part1(lists));
             Console.WriteLine(Part2(lists));
         }
@@ -68,7 +58,7 @@
                 newlist.RemoveAt(i);
                 lists.Add(newlist);
             }
-            return !lists.TrueForAll(i=>!Safe(i));
+            return !lists.TrueForAll(i => !Safe(i));
         }
         private int Part2(List<List<int>> lists)
         {

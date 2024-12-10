@@ -6,27 +6,13 @@
         public void Start()
         {
             var lines = File.ReadLines($"{Global.InputPath}/{TextFileName}");
-            List<string> input = new();
-            foreach (var line in lines)
-            {
-                input.Add(line);
-            }
-            if (!input.TrueForAll(i => i.Length == input.First().Length))
-            {
-                Console.WriteLine($"Something doesn't add up in {nameof(Day04)}");
-            }
-            int width = input.First().Length;
-            int height = input.Count;
-            char[,] map = new char[width, height];
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    map[x, y] = input[y][x];
-                }
-            }
-            Console.WriteLine(Part1(map, width, height));
-            Console.WriteLine(Part2(map, width, height));
+            char[,] map = Input.InterpretAs2DCharArray(lines);
+            int width = map.GetLength(0);
+            int height = map.GetLength(1);
+            //Console.WriteLine(Part1(map, width, height));
+            Console.WriteLine($"{369} (Precomputed)");
+            //Console.WriteLine(Part2(map, width, height));
+            Console.WriteLine($"{1169} (Precomputed)");
         }
         private Dictionary<char,List<(int x,int y)>> GetAntennas(char[,] map, int width, int height)
         {
