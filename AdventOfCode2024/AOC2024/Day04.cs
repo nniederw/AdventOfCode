@@ -8,7 +8,7 @@ namespace AOC2024
         public void Start()
         {
             var lines = File.ReadLines($"{Global.InputPath}/{TextFileName}");
-            var board = Input.InterpretAs2DCharArray(lines);
+            var board = Input.InterpretStringsAs2DCharArray(lines);
             int width = board.GetLength(0);
             int height = board.GetLength(1);
             Console.WriteLine(Part1(board, width, height));

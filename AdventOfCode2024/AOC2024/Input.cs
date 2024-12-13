@@ -33,7 +33,7 @@ namespace AOC2024
             => InterpretAs2DArray(input.Select(i => i.AsEnumerable()), Interpret);
         public static int[,] InterpretStringsAs2DIntArray(IEnumerable<string> input)
             => InterpretStringsAs2DArray(input, i => Convert.ToInt32(i.ToString()));
-        public static char[,] InterpretAs2DCharArray(IEnumerable<string> input)
+        public static char[,] InterpretStringsAs2DCharArray(IEnumerable<string> input)
             => InterpretStringsAs2DArray(input, i => i);
     }
 }

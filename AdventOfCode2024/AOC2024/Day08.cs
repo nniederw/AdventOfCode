@@ -6,7 +6,7 @@
         public void Start()
         {
             var lines = File.ReadLines($"{Global.InputPath}/{TextFileName}");
-            char[,] map = Input.InterpretAs2DCharArray(lines);
+            char[,] map = Input.InterpretStringsAs2DCharArray(lines);
             int width = map.GetLength(0);
             int height = map.GetLength(1);
             //Console.WriteLine(Part1(map, width, height));
