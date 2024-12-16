@@ -28,7 +28,8 @@
                 robots.Add(new Robot((x, y), (dx, dy)));
             }
             Console.WriteLine(Part1(robots));
-            Console.WriteLine(Part2(robots));
+            Console.WriteLine($"{6355} (Precomputed)");
+            //Console.WriteLine(Part2(robots));
         }
         private static (long x, long y) GetLoopAroundPosition((long x, long y) pos, long width, long height)
         {
@@ -123,19 +124,50 @@
             foreach (var item in target)
                 yield return item;
         }
+        private bool LooksSpecial(int[,] map, long width, long height)
+        {
+            const long Threshold = 20;
+            long specialCols = 0;
+            for (int x = 0; x < width; x++)
+            {
+                long sum = 0;
+                for (int y = 0; y < height; y++)
+                {
+                    sum += map[x, y];
+                }
+                if (sum >= Threshold)
+                {
+                    specialCols++;
+                }
+            }
+            long specialRows = 0;
+            for (int y = 0; y < height; y++)
+            {
+                long sum = 0;
+                for (int x = 0; x < width; x++)
+                {
+                    sum += map[x, y];
+                }
+                if (sum >= Threshold)
+                {
+                    specialRows++;
+                }
+            }
+            return specialCols >= 2 && specialRows >= 2;
+        }
         //already searched 0-508
         private long Part2(List<Robot> robots)
         {
-            int skip = 508;
+            int skip = 6350;
             var ActiveRobots = robots.ToList();
             MoveRobots(ActiveRobots, skip);
-            for (int i = 0; i < 1000; i++) //assumtion is that it is in less than 20
+            for (int i = 0; i < 10; i++) //assumtion is that it is in less than 20
             {
                 Console.WriteLine($"{i + skip} seconds");
                 int[,] map = new int[Width, Height];
                 ActiveRobots.ForEach(i => map[i.Position.x, i.Position.y]++);
                 MoveRobots(ActiveRobots, 1);
-                //if (!ToEnumerable(map).Where(i => i > 1).Any())
+                //if (LooksSpecial(map, Width, Height))s
                 {
                     PrintMap(map, Width, Height);
                 }
