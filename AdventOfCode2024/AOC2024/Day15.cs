@@ -32,6 +32,17 @@
             Console.WriteLine(Part1(map, width, height, RobotMovements));
             Console.WriteLine(Part2(map, width, height, RobotMovements));
         }
+        private void PrintMap(char[,] map, int width, int height)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Console.Write(map[x, y]);
+                }
+                Console.WriteLine();
+            }
+        }
         private (int dx, int dy) GetDirection(char Movement)
         {
             switch (Movement)
@@ -168,6 +179,10 @@
             if (dx != 0)
             {
                 yield return (x + dx + dx, y + dy + dy);
+                foreach (var box in GetBoxes(map, x + dx + dx, y + dy + dy, dx, dy))
+                {
+                    yield return box;
+                }
             }
             else
             {
@@ -207,6 +222,10 @@
             char[,] result = (char[,])map.Clone();
             foreach (var box in boxes)
             {
+                result[box.x, box.y] = EmptySpace;
+            }
+            foreach (var box in boxes)
+            {
                 result[box.x + dx, box.y + dy] = map[box.x, box.y];
             }
             return result;
@@ -242,9 +261,12 @@
                 }
                 RobotNewX = RobotX + dx;
                 RobotNewY = RobotY + dy;
-                return MoveBoxes(map, dx, dy, boxes);
+                resultMap = MoveBoxes(resultMap, dx, dy, boxes);
+                resultMap[RobotX, RobotY] = EmptySpace;
+                resultMap[RobotX + dx, RobotY + dy] = Robot;
+                return resultMap;
             }
-            throw new Exception($"Unexpected events in {MoveRobotOnce} of day 15");
+            throw new Exception($"Unexpected events with char {c} in {MoveRobotOnce} of day 15");
         }
         private char[,] ExpandMap(char[,] map, int width, int height)
         {
@@ -274,6 +296,24 @@
             return result;
         }
         private long BigBoxGPS(int x, int y) => 100 * y + x;
+        private bool MapCorrect(char[,] map, int width, int height)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (IsBoxLeft(map[x, y]) && !IsBoxRight(map[x + 1, y]))
+                    {
+                        return false;
+                    }
+                    if (IsBoxRight(map[x, y]) && !IsBoxLeft(map[x - 1, y]))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
         private long Part2(char[,] map, int width, int height, List<char> RobotMovements)
         {
             int RobotX = 0;
@@ -281,9 +321,17 @@
             char[,] activeMap = ExpandMap(map, width, height);
             width *= 2;
             (RobotX, RobotY) = GetRobotPosition(activeMap, width, height);
+            int iteration = 0;
             foreach (var movement in RobotMovements)
             {
+                //PrintMap(activeMap, width, height);
                 activeMap = MoveRobotOnceBigBoxes(activeMap, RobotX, RobotY, movement, out RobotX, out RobotY);
+                if (!MapCorrect(activeMap, width, height))
+                {
+                    PrintMap(activeMap, width, height);
+                    throw new Exception("Map now incorrect");
+                }
+                iteration++;
             }
             long gpsSum = 0;
             for (int x = 0; x < width; x++)
