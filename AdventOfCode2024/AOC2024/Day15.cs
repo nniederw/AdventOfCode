@@ -153,9 +153,150 @@
             }
             return gpsSum;
         }
+        private const char BoxLeft = '[';
+        private const char BoxRight = ']';
+        private bool IsBoxLeft(char c) => c == BoxLeft;
+        private bool IsBoxRight(char c) => c == BoxRight;
+        private bool IsBigBox(char c) => IsBoxLeft(c) || IsBoxRight(c);
+        private IEnumerable<(int x, int y)> GetBoxes(char[,] map, int x, int y, int dx, int dy)
+        {
+            if (!IsBigBox(map[x + dx, y + dy]))
+            {
+                yield break;
+            }
+            yield return (x + dx, y + dy);
+            if (dx != 0)
+            {
+                yield return (x + dx + dx, y + dy + dy);
+            }
+            else
+            {
+                (int x, int y) other;
+                if (IsBoxLeft(map[x + dx, y + dy]))
+                {
+                    other = (x + dx + 1, y + dy);
+                }
+                else
+                {
+                    other = (x + dx - 1, y + dy);
+                }
+                yield return other;
+                foreach (var orig in GetBoxes(map, x + dx, y + dy, dx, dy))
+                {
+                    yield return orig;
+                }
+                foreach (var oth in GetBoxes(map, other.x, other.y, dx, dy))
+                {
+                    yield return oth;
+                }
+            }
+        }
+        private bool BoxesMovable(char[,] map, int dx, int dy, IReadOnlyCollection<(int x, int y)> boxes)
+        {
+            foreach (var box in boxes)
+            {
+                if (IsWall(map[box.x + dx, box.y + dy]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        private char[,] MoveBoxes(char[,] map, int dx, int dy, IReadOnlyCollection<(int x, int y)> boxes)
+        {
+            char[,] result = (char[,])map.Clone();
+            foreach (var box in boxes)
+            {
+                result[box.x + dx, box.y + dy] = map[box.x, box.y];
+            }
+            return result;
+        }
+        private char[,] MoveRobotOnceBigBoxes(char[,] map, int RobotX, int RobotY, char Movement, out int RobotNewX, out int RobotNewY)
+        {
+            char[,] resultMap = (char[,])map.Clone();
+            int dx, dy;
+            (dx, dy) = GetDirection(Movement);
+            char c = resultMap[RobotX + dx, RobotY + dy];
+            if (IsWall(c))
+            {
+                RobotNewX = RobotX;
+                RobotNewY = RobotY;
+                return resultMap;
+            }
+            if (IsEmptySpace(c))
+            {
+                resultMap[RobotX, RobotY] = EmptySpace;
+                resultMap[RobotX + dx, RobotY + dy] = Robot;
+                RobotNewX = RobotX + dx;
+                RobotNewY = RobotY + dy;
+                return resultMap;
+            }
+            if (IsBigBox(c))
+            {
+                var boxes = GetBoxes(resultMap, RobotX, RobotY, dx, dy).ToList();
+                if (!BoxesMovable(resultMap, dx, dy, boxes))
+                {
+                    RobotNewX = RobotX;
+                    RobotNewY = RobotY;
+                    return resultMap;
+                }
+                RobotNewX = RobotX + dx;
+                RobotNewY = RobotY + dy;
+                return MoveBoxes(map, dx, dy, boxes);
+            }
+            throw new Exception($"Unexpected events in {MoveRobotOnce} of day 15");
+        }
+        private char[,] ExpandMap(char[,] map, int width, int height)
+        {
+            char[,] result = new char[width * 2, height];
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    char c = map[x, y];
+                    if (IsWall(c) || IsEmptySpace(c))
+                    {
+                        result[x * 2, y] = c;
+                        result[x * 2 + 1, y] = c;
+                    }
+                    else if (IsRobot(c))
+                    {
+                        result[x * 2, y] = c;
+                        result[x * 2 + 1, y] = EmptySpace;
+                    }
+                    else if (IsBox(c))
+                    {
+                        result[x * 2, y] = BoxLeft;
+                        result[x * 2 + 1, y] = BoxRight;
+                    }
+                }
+            }
+            return result;
+        }
+        private long BigBoxGPS(int x, int y) => 100 * y + x;
         private long Part2(char[,] map, int width, int height, List<char> RobotMovements)
         {
-            return -1;
+            int RobotX = 0;
+            int RobotY = 0;
+            char[,] activeMap = ExpandMap(map, width, height);
+            width *= 2;
+            (RobotX, RobotY) = GetRobotPosition(activeMap, width, height);
+            foreach (var movement in RobotMovements)
+            {
+                activeMap = MoveRobotOnceBigBoxes(activeMap, RobotX, RobotY, movement, out RobotX, out RobotY);
+            }
+            long gpsSum = 0;
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (IsBoxLeft(activeMap[x, y]))
+                    {
+                        gpsSum += BigBoxGPS(x, y);
+                    }
+                }
+            }
+            return gpsSum;
         }
     }
 }
