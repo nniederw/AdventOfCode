@@ -24,7 +24,8 @@ namespace AOC2024
             {
                 for (int x = 0; x < width; x++)
                 {
-                    result[y, x] = Interpret(builtInput[x][y]);
+                    //result[y, x] = Interpret(builtInput[x][y]);
+                    result[x, y] = Interpret(builtInput[y][x]);
                 }
             }
             return result;

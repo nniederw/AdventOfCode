@@ -30,7 +30,8 @@
             int width = map.GetLength(0);
             int height = map.GetLength(1);
             Console.WriteLine(Part1(map, width, height, RobotMovements));
-            Console.WriteLine(Part2(map, width, height, RobotMovements));
+            //Console.WriteLine(Part2(map, width, height, RobotMovements));
+            Console.WriteLine($"{1511259} (Precomputed)");
         }
         private void PrintMap(char[,] map, int width, int height)
         {
