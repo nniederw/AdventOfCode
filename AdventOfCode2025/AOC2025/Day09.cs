@@ -89,6 +89,9 @@
             //Console.WriteLine($"({minX},{minY}) - ({maxX},{maxY})");
             bool OnBoundingBox(long x, long y)
                 => x == minX || x == maxX || y == minY || y == maxY;
+            HashSet<(long x, long y)> EdgePointsInside = new();
+            List<(long x, long y)> NotInsidePoints = new();
+            Console.WriteLine(lines.Select(i => Math.Abs(i.StartX - i.EndX) + Math.Abs(i.StartY - i.EndY) + 1).Sum());
             return -1;
         }
         private class Line
