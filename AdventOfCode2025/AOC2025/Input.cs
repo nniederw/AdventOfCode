@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace AOC2024
+﻿namespace AOC2025
 {
     public static class Input
     {

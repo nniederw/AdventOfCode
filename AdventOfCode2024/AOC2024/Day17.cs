@@ -1,4 +1,6 @@
-﻿namespace AOC2024
+﻿using System.Collections;
+
+namespace AOC2024
 {
     class Day17 : IDay
     {
@@ -16,8 +18,15 @@
             {
                 Program.Add(Convert.ToByte(split));
             }
+            /*foreach (var o in GetOutput(117440, 0,0))
+            {
+                Console.WriteLine(o);
+            }
+            var ps = new ProgramState(117440, 0, 0, Program);
+            ps.Run();
+            Console.WriteLine(ps.StringOutput);*/
             Console.WriteLine(Part1(regA, regB, regC, Program));
-            Console.WriteLine(Part2(regA, regB, regC, Program));
+            //Console.WriteLine(Part2(regA, regB, regC, Program));
         }
         private string Part1(long RegisterA, long RegisterB, long RegisterC, IReadOnlyList<byte> Program)
         {
@@ -25,17 +34,87 @@
             while (program.ProgramStep()) { }
             return program.StringOutput;
         }
-        private long? SearchForRegA(long RegisterAStart, long SearchCount, long RegisterB, long RegisterC, IReadOnlyList<byte> Program)
+        private bool FirstNumberPossible(long A)
         {
-            Console.WriteLine($"Start Search for {RegisterAStart}-{RegisterAStart+SearchCount}");
+            //return ((((A % 8) ^ 1) ^ 4) ^ (A >> (int)((A % 8) ^ 1))) % 8 == 2;
+            return ((A & 7) ^ ((A >> (int)((A & 7) ^ 1)) & 7)) == 7;
+            //            return;
+            /*B = A % 8;
+            B = B ^ 1;
+            C = A >> (int)B;
+            //A = A >> 3;
+            B = B ^ 4;
+            B = B ^ C;
+            return B % 8 == 2;
+            B = A % 8;
+            B = (A % 8) ^ 1;
+            C = A >> (int)((A % 8) ^ 1);
+            //A = A >> 3;
+            B = ((A % 8) ^ 1) ^ 4;
+            B = (((A % 8) ^ 1) ^ 4) ^ (A >> (int)((A % 8) ^ 1));
+            return ((((A % 8) ^ 1) ^ 4) ^ (A >> (int)((A % 8) ^ 1))) % 8 == 2;*/
+        }
+        private List<long> GetSmallPossibleValues()
+        {
+            List<long> Possible = new();
+            for (int i = 0; i < 1024 + 1; i++)
+            {
+                if (FirstNumberPossible(i))
+                {
+                    Possible.Add(i);
+                }
+            }
+            return Possible;
+        }
+        private long? SearchForRegA(long RegisterAStart, long SearchCount, long RegisterB, long RegisterC, IReadOnlyList<byte> Program)//, IReadOnlyList<long> PossibleValuesUnder1024)
+        {
+            Console.WriteLine($"Start Search for {RegisterAStart}-{RegisterAStart + SearchCount}");
             //var time = DateTime.Now;
+            /*const long increment = 1024;
+            const long incrementMask = increment - 1;
+            foreach (var possible in PossibleValuesUnder1024)
+            {
+                long regAstart = RegisterAStart;
+                while((regAstart & incrementMask) != possible) { regAstart++; }
+//                if ((regAstart & incrementMask) != possible)
+                {
+  //                  regAstart += increment - (regAstart & incrementMask) + possible;
+                }
+                for (long i = regAstart; i < SearchCount + RegisterAStart; i += increment)
+                {
+                    ProgramState program = new ProgramState(i, RegisterB, RegisterC, Program, 0);
+                    int lastCount = 0;
+                    while (program.ProgramStep())
+                    {
+                        if (program.Output.Count == lastCount + 1)
+                        {
+                            if (program.Output.Count > Program.Count)
+                            {
+                                break;
+                            }
+                            if (program.Output[lastCount] != Program[lastCount])
+                            {
+                                break;
+                            }
+                            lastCount++;
+                        }
+                    }
+                    if (Program.Count != program.Output.Count)
+                    {
+                        continue;
+                    }
+                    if (Program.Zip(program.Output).Any(i => i.First != i.Second))
+                    {
+                        continue;
+                    }
+                    return i;
+                }
+            }*/
+
             for (long i = RegisterAStart; i < SearchCount + RegisterAStart; i++)
             {
-                if (i % 2000000 == 0)
-                {
-                    //Console.WriteLine($"Searched Rounds {RegisterAStart}-{i - 1}, step talking {(DateTime.Now - time).TotalMilliseconds}ms");
-                    //time = DateTime.Now;
-                }
+                if (!FirstNumberPossible(i))//, RegisterB, RegisterC))
+                { continue; }
                 ProgramState program = new ProgramState(i, RegisterB, RegisterC, Program, 0);
                 int lastCount = 0;
                 while (program.ProgramStep())
@@ -66,15 +145,46 @@
             Console.WriteLine($"Ended Search ({RegisterAStart}-{RegisterAStart + SearchCount}) witout finding anything");
             return null;
         }
-        //searched 0 - 316240000000
+        private long SearchForRegAFast(long RegisterAStart, long SearchCount, IReadOnlyList<byte> Program)//, IReadOnlyList<long> PossibleValuesUnder1024)
+        {
+            Console.WriteLine($"Start Search for {RegisterAStart}-{RegisterAStart + SearchCount}");
+            int MaxLengthFound = 0;
+            for (long regA = RegisterAStart; regA < SearchCount + RegisterAStart; regA++)
+            {
+                if (!FirstNumberPossible(regA)) { continue; }
+                //var output = GetOutput(regA, RegisterB, RegisterC);
+                var output = GetOutputFast(regA);
+                int lengthMatched = 0;
+                foreach (var zip in Program.Zip(output))
+                {
+                    if (zip.First != zip.Second) { break; }
+                    lengthMatched++;
+                }
+                MaxLengthFound = Math.Max(lengthMatched, MaxLengthFound);
+                if (lengthMatched != Program.Count)
+                {
+                    continue;
+                }
+                return regA;
+            }
+            //Console.WriteLine();
+            Console.WriteLine($"Ended Search ({RegisterAStart}-{RegisterAStart + SearchCount}) witout finding anything, with max matching length {MaxLengthFound}");
+            return -1;
+        }
+        //searched 0 - 924540000000
+        //searched 0 - 20004990000000 with reduced set 
         private long Part2(long RegisterA, long RegisterB, long RegisterC, IReadOnlyList<byte> Program)
         {
             //const long MaxTries = 10000000000000;
             const byte SearchThreads = 16;
-            const long StartSearch = 316240000000;
-            const long CountPerSearch = 50000000;
+            const long StartSearch = 20004990000000;
+            //const long StartSearch = (long)1 << 44;
+            const long CountPerSearch = 50000000 * 8;
+            //const long CountPerSearch = 1 << 26;
 
             long Start = StartSearch;
+            var PossibleSmallNumbers = GetSmallPossibleValues();
+            //Console.WriteLine($"Total count: {PossibleSmallNumbers.Count}");
             while (true)
             {
                 var time = DateTime.Now;
@@ -84,20 +194,20 @@
                     ThreadValues.Add((Start, CountPerSearch));
                     Start += CountPerSearch;
                 }
-                List<Task<long?>> Tasks = new();
+                List<Task<long>> Tasks = new();
                 for (int i = 0; i < ThreadValues.Count; i++)
                 {
                     var value = ThreadValues[i];
-                    var task = Task.Run(() => SearchForRegA(value.startRegA, value.searchCount, RegisterB, RegisterC, Program));
+                    var task = Task.Run(() => SearchForRegAFast(value.startRegA, value.searchCount, Program));//, PossibleSmallNumbers));
                     Tasks.Add(task);
                 }
                 Task.WhenAll(Tasks).Wait();
                 foreach (var task in Tasks)
                 {
                     //task.Wait();
-                    if (task.Result != null)
+                    if (task.Result != -1)
                     {
-                        long res = task.Result.Value;
+                        long res = task.Result;
                         Console.WriteLine("----------------------------------------------------------------------------");
                         Console.WriteLine($"Found Result: {res}");
                         Console.WriteLine("----------------------------------------------------------------------------");
@@ -142,6 +252,33 @@
                 return i;
             }*/
             //throw new Exception($"Wasn't able to find the solution of day 17 part 2");
+        }
+        private IEnumerable<byte> GetOutput(long RegA, long RegB, long RegC)
+        {
+            do
+            {
+                RegB = RegA & 7;
+                RegB = RegB ^ 1;
+                RegC = RegA >> (int)RegB;
+                RegA = RegA >> 3;
+                RegB = RegB ^ 4;
+                RegB = RegB ^ RegC;
+                yield return (byte)(RegB & 7);
+            }
+            while (RegA != 0);
+        }
+        private IEnumerable<byte> GetOutputFast(long RegA)
+        {
+            long RegB = 0;
+            long RegC = 0;
+            do
+            {
+                RegB = (RegA & 7) ^ 1;
+                RegC = RegA >> (int)RegB;
+                RegA = RegA >> 3;
+                yield return (byte)((RegB ^ RegC ^ 4) & 7);
+            }
+            while (RegA != 0);
         }
         private class ProgramState
         {
@@ -203,7 +340,8 @@
             }
             private void bst()
             {
-                RegisterB = CurrentComboOperand() % 8;
+                //RegisterB = CurrentComboOperand() % 8;
+                RegisterB = CurrentComboOperand() & 7;
                 IncreaseInstructionPointer();
             }
             private void jnz()
@@ -223,9 +361,7 @@
             }
             private void OUT()
             {
-                var combo = CurrentComboOperand();
-                combo %= 8;
-                Output.Add((byte)combo);
+                Output.Add((byte)(CurrentComboOperand() & 7));
                 IncreaseInstructionPointer();
             }
             private void bdv()
@@ -279,6 +415,10 @@
                     HasHalted = true;
                 }
                 return !HasHalted;
+            }
+            public void Run()
+            {
+                while (ProgramStep()) ;
             }
         }
     }

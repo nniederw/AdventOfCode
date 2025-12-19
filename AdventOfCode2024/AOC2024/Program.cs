@@ -5,6 +5,13 @@ var Days = new List<IDay>()
     new Day11(), new Day12(), new Day13(), new Day14(), new Day15(), new Day16(), new Day17(), new Day18(), new Day19(), new Day20(),
     new Day21(), new Day22(), new Day23(), new Day24(), new Day25(),
 };
+/*var g = new BuiltGraph<int>(Enumerable.Range(0, 4));
+g.AddEdge(0, 1);
+g.AddEdge(1, 3);
+g.AddEdge(0, 2);
+g.AddEdge(2, 3);
+var paths = g.GetAllPaths(0, 3).ToList();
+*/
 foreach (var day in Days)
 {
     Console.WriteLine(day.GetType().Name);
